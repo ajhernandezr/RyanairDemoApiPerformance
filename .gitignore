@@ -1,0 +1,9 @@
+**/build/
+**/target/
+**/out/
+**/.idea/
+**/*.log
+**/classes/*.*
+**/.gradle/
+/target/
+/out/

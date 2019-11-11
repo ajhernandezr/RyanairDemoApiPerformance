@@ -1,0 +1,71 @@
+apply plugin: 'java'
+
+buildscript {
+    ext {
+        karateVersion = '0.9.4'
+    }
+}
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    integration {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+dependencies {
+    implementation 'org.scala-lang:scala-library:2.12.8'
+
+    testCompile("com.intuit.karate:karate-gatling:${karateVersion}")
+    testCompile "com.intuit.karate:karate-apache:${karateVersion}"
+    testCompile 'io.gatling.highcharts:gatling-charts-highcharts:3.0.2'
+    testCompile "io.gatling:gatling-app:3.0.2"
+
+    testCompile 'net.masterthought:cucumber-reporting:3.8.0'
+    testCompile group: 'com.intuit.karate', name: 'karate-junit4', version: '0.9.1'
+
+}
+test.enabled = false
+
+test {
+    reports {
+        reports.junitXml.enabled = false
+        reports.html.enabled = false
+    }
+}
+
+task apiTest(type: Test, description: 'Runs the functional tests.') {
+
+    // pull cucumber options into the cucumber jvm
+    systemProperty "cucumber.options", System.properties.getProperty("cucumber.options")
+    // pull karate options into the jvm
+    systemProperty "karate.env", System.properties.getProperty("karate.env")
+
+    // pass the property for use different enviroments
+    //    systemProperty "base.URL", System.properties.getProperty("base.URL")
+    //    systemProperties project.properties.subMap(["karate.ENV"])
+
+    outputs.upToDateWhen { false }
+}
+
+task gatlingRun(type: JavaExec) {
+    group = 'Performance api Tests'
+    description = 'Run Gatling Tests'
+
+    new File("${buildDir}/reports/gatling").mkdirs()
+
+    classpath = sourceSets.test.runtimeClasspath
+
+    main = "io.gatling.app.Gatling"
+    args = [
+            '-s', 'test.LoadSimulation',
+            '-rf', "${buildDir}/reports/gatling"
+    ]
+    systemProperties System.properties
+}
