@@ -24,12 +24,16 @@ Feature: User Controller
   @createUser
   Scenario: Creates a new user with dynamic parameters
     Given path '/user'
-    And request {email:'#(email)', name:'#(test)'}
+    * print "hola"
+    And request {email:'#(email)',name:'#(name)'}
     When method POST
     * def res = response
     And def userID = res.id
 
+  @getAllUsers
   Scenario: Get all the users
     Given path '/user/all'
-    And retry until responseStatus ==200
+    And retry until responseStatus == 200
     When method GET
+    And def res = $..id
+    And def count = res.length

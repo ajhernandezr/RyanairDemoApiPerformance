@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public class GeoserverServicesRunner {
+public class KarateRunner {
 
     @Test
     public void testParallel() throws IOException {
@@ -24,7 +24,7 @@ public class GeoserverServicesRunner {
 //        String environment = String.valueOf(System.getProperty("karate.ENV"));
 
         List<String> tags = Arrays.asList("~@ignore");
-        List<String> features = Arrays.asList("src/test/scala/features");
+        List<String> features = Arrays.asList("src/test/scala/test/features");
         String karateOutputPath = "target/surefire-reports";
         Results results = Runner.parallel(tags, features, 6, karateOutputPath);
 
@@ -39,7 +39,7 @@ public class GeoserverServicesRunner {
         for (File file : jsonFiles) {
             jsonPaths.add(file.getAbsolutePath());
         }
-        Configuration config = new Configuration(new File("target"), "gradle_karate_demo");
+        Configuration config = new Configuration(new File("target"), "ryanair_demo");
         ReportBuilder reportBuilder = new ReportBuilder(jsonPaths, config);
         reportBuilder.generateReports();    }
 }
